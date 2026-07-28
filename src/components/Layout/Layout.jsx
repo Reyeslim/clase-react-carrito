@@ -1,9 +1,44 @@
-import { Outlet } from 'react-router-dom';
-import Footer from '../Footer/Footer';
-import Header from '../Header/Header';
-import styles from './Layout.module.css';
+import { useEffect } from "react"
+import { useDispatch } from "react-redux"
+import { Outlet } from "react-router-dom"
+import { getCart } from "../../api/cart"
+import { getWishlist } from "../../api/wishlist"
+import { setLocalCart } from "../../store/slices/cartSlice"
+import { setLocalWishlist } from "../../store/slices/wishlistSlice"
+import Footer from "../Footer/Footer"
+import Header from "../Header/Header"
+import styles from "./Layout.module.css"
 
 function Layout() {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    async function loadCartAndWishlist() {
+      try {
+        // Pedimos el carrito guardado en la base de datos y lo aplicamos al estado global de Redux.
+        const savedCart = await getCart()
+        if (Array.isArray(savedCart)) {
+          dispatch(setLocalCart(savedCart))
+        }
+      } catch (cartError) {
+        console.log("No se pudo cargar el carrito desde el back", cartError)
+      }
+
+      try {
+        // Pedimos la wishlist guardada en la base de datos y la sincronizamos con el estado global.
+        const savedWishlist = await getWishlist()
+        if (Array.isArray(savedWishlist)) {
+          dispatch(setLocalWishlist(savedWishlist))
+        }
+      } catch (wishlistError) {
+        console.log(
+          "No se pudo cargar la lista de deseos desde el back",
+          wishlistError,
+        )
+      }
+    }
+    loadCartAndWishlist()
+  }, [dispatch])
+
   return (
     <div className={styles.shell}>
       <div className={styles.container}>
@@ -12,7 +47,7 @@ function Layout() {
         <Footer />
       </div>
     </div>
-  );
+  )
 }
 
-export default Layout;
+export default Layout

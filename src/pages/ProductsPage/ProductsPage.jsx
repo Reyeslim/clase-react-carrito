@@ -32,34 +32,8 @@ function ProductsPage() {
       }
     }
 
-    async function loadCartAndWishlist() {
-      try {
-        // Pedimos el carrito guardado en la base de datos y lo aplicamos al estado global de Redux.
-        const savedCart = await getCart()
-        if (Array.isArray(savedCart)) {
-          dispatch(setLocalCart(savedCart))
-        }
-      } catch (cartError) {
-        console.log("No se pudo cargar el carrito desde el back", cartError)
-      }
-
-      try {
-        // Pedimos la wishlist guardada en la base de datos y la sincronizamos con el estado global.
-        const savedWishlist = await getWishlist()
-        if (Array.isArray(savedWishlist)) {
-          dispatch(setLocalWishlist(savedWishlist))
-        }
-      } catch (wishlistError) {
-        console.log(
-          "No se pudo cargar la lista de deseos desde el back",
-          wishlistError,
-        )
-      }
-    }
-
     loadProducts()
-    loadCartAndWishlist()
-  }, [dispatch])
+  }, [])
 
   async function handleAddToCart(productId) {
     if (addingToCart === productId) return // doble click por error
