@@ -1,8 +1,18 @@
+import { useMemo } from "react"
 import styles from "./CartSummary.module.css"
 
+const PRICE_PER_UNIT = 10
+
 function CartSummary({ items }) {
-  const totalItems = 0
-  const totalPrice = 0
+  const totalItems = useMemo(
+    () => items.reduce((acc, item) => acc + item.quantity, 0),
+    [items],
+  )
+
+  const totalPrice = useMemo(
+    () => items.reduce((acc, item) => acc + item.quantity * PRICE_PER_UNIT, 0), // * item.price en proyecto real
+    [items],
+  )
 
   return (
     <aside className={styles.box}>

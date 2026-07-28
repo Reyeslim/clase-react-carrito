@@ -1,22 +1,48 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit"
 
 const cartSlice = createSlice({
-  name: 'cart',
+  name: "cart",
   initialState: {
-    items: [],
+    items: [], // [{ productId: 'uuid', quantity: 1 }, ...]
   },
   reducers: {
-    addLocalCartItem(state, action) {
-      const existingItem = state.items.find((item) => item.productId === action.payload.productId);
+    // Reemplaza el carrito actual con los datos recibidos del backend
+    setLocalCart: (state, action) => {
+      state.items = action.payload
+    },
+    // Añadir o incrementar cantidad si ya existe
+    addLocalCartItem: (state, action) => {
+      const { productId, quantity } = action.payload
+      const existingItem = state.items.find(
+        (item) => item.productId === productId,
+      )
 
       if (existingItem) {
-        existingItem.quantity += action.payload.quantity;
+        existingItem.quantity += quantity
       } else {
-        state.items.push(action.payload);
+        state.items.push({ productId, quantity })
       }
     },
-  },
-});
 
-export const { addLocalCartItem } = cartSlice.actions;
-export default cartSlice.reducer;
+    // Eliminar completamente un producto del carrito
+    removeLocalCartItem: (state, action) => {
+      state.items = state.items.filter(
+        (item) => item.productId !== action.payload,
+      )
+    },
+
+    // Vaciar el carrito (cuando se hace logout o checkout)
+    clearLocalCart: (state) => {
+      state.items = []
+    },
+  },
+})
+
+export const {
+  setLocalCart,
+  addLocalCartItem,
+  removeLocalCartItem,
+  clearLocalCart,
+} = cartSlice.actions
+
+export default cartSlice.reducer

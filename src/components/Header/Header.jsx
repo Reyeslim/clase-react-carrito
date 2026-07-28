@@ -1,10 +1,17 @@
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import styles from './Header.module.css';
+import { Link } from "react-router-dom"
+import { useSelector } from "react-redux"
+import styles from "./Header.module.css"
+import { useEffect } from "react"
 
 function Header() {
-  const cartItems = useSelector((state) => state.cart.items);
-  const wishlistIds = useSelector((state) => state.wishlist.ids);
+  const cartItems = useSelector((state) => state.cart.items)
+  const wishlistIds = useSelector((state) => state.wishlist.ids)
+  const cartCount = cartItems.reduce(
+    (total, item) => (total += item.quantity),
+    0,
+  )
+
+  useEffect
 
   return (
     <header className={styles.header}>
@@ -23,11 +30,11 @@ function Header() {
       </nav>
 
       <div className={styles.status}>
-        <span>Cart: {cartItems.length}</span>
+        <span>Cart: {cartCount}</span>
         <span>Wishlist: {wishlistIds.length}</span>
       </div>
     </header>
-  );
+  )
 }
 
-export default Header;
+export default Header
